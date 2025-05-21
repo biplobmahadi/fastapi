@@ -4,6 +4,7 @@ from typing import List, Annotated
 import models
 from database import SessionLocal, engine
 from sqlalchemy.orm import Session
+from routes import choices
 
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
@@ -54,3 +55,5 @@ async def create_question(question: Question, db: db_dependency):
 
     db.commit()
     return db_question
+
+app.include_router(choices.router, prefix="/api", tags=["choices"])
