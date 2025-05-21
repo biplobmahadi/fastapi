@@ -30,6 +30,13 @@ db_dependency = Annotated[Session, Depends(get_db)]
 async def root():
     return {"message": "Hello World"}
 
+@app.get("/questions/{question_id}")
+async def read_question(question_id: int, db: db_dependency):
+    question = db.query(models.Questions).filter(models.Questions.id == question_id).first()
+    if not question:
+        raise HTTPException(status_code=404, detail="Question not found")
+    return question
+
 @app.post("/questions/")
 async def create_question(question: Question, db: db_dependency):
     db_question = models.Questions(question_text=question.question_text)
